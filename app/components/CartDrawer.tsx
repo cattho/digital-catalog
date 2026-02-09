@@ -45,7 +45,9 @@ export function CartDrawer({
       <aside className="absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-xl flex flex-col">
         <div className="p-4 border-b border-gray-200 flex items-center justify-between">
           <div>
-            <div className="text-sm font-semibold text-gray-900">Tu carrito</div>
+            <div className="text-sm font-semibold text-gray-900">
+              Tu carrito
+            </div>
             <div className="text-xs text-gray-600">{count} artículo(s)</div>
           </div>
           <button
@@ -53,7 +55,7 @@ export function CartDrawer({
             className="rounded-lg px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
             onClick={onClose}
           >
-            Cerrar
+            Volver al catálogo
           </button>
         </div>
 
@@ -122,6 +124,9 @@ export function CartDrawer({
           >
             Finalizar por WhatsApp
           </button>
+          <p className="text-center text-xs text-gray-500 mt-2">
+            Pronto te contactaremos por WhatsApp para confirmar tu pedido.
+          </p>
         </div>
       </aside>
     </div>

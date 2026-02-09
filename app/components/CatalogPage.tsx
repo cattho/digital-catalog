@@ -3,31 +3,40 @@ import type { CartItem, Product } from "~/types/catalog";
 import { ProductCard } from "~/components/ProductCard";
 import { BrandHeader } from "~/components/BrandHeader";
 import { CartDrawer } from "~/components/CartDrawer";
-import { addToCart, readCart, removeFromCart, writeCart } from "~/lib/cart.client";
-import { getProducts } from "~/lib/products.client";
+import {
+  addToCart,
+  readCart,
+  removeFromCart,
+  writeCart,
+} from "~/lib/cart.client";
 import { buildWhatsAppUrl, generateWhatsAppMessage } from "~/lib/whatsapp";
 
 export function CatalogPage({
   storeName,
   whatsappPhone,
   currency,
+  initialProducts = [],
 }: {
   storeName: string;
   whatsappPhone: string;
   currency: string;
+  initialProducts?: Product[];
 }) {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Product[]>(initialProducts);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
+  const [isCartsLoaded, setIsCartsLoaded] = useState(false);
 
   useEffect(() => {
-    setProducts(getProducts());
     setCartItems(readCart());
+    setIsCartsLoaded(true);
   }, []);
 
   useEffect(() => {
-    writeCart(cartItems);
-  }, [cartItems]);
+    if (isCartsLoaded) {
+      writeCart(cartItems);
+    }
+  }, [cartItems, isCartsLoaded]);
 
   const productsById = useMemo(() => {
     return Object.fromEntries(products.map((p) => [p.id, p])) as Record<
@@ -39,6 +48,13 @@ export function CatalogPage({
   const cartCount = cartItems.reduce((acc, i) => acc + i.quantity, 0);
 
   const onCheckout = () => {
+    if (!whatsappPhone) {
+      alert(
+        "Esta tienda aún no tiene configurado un número para recibir pedidos.",
+      );
+      return;
+    }
+
     const encoded = generateWhatsAppMessage({
       storeName,
       currency,
@@ -66,13 +82,6 @@ export function CatalogPage({
               Agrega productos al carrito y finaliza por WhatsApp.
             </p>
           </div>
-
-          <a
-            href="/admin"
-            className="text-sm font-semibold text-gray-700 hover:underline"
-          >
-            Admin
-          </a>
         </div>
 
         <section className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -85,6 +94,18 @@ export function CatalogPage({
             />
           ))}
         </section>
+
+        <footer className="mt-12 py-6 text-center border-t border-gray-100">
+          <p className="text-xs text-gray-500">
+            © {new Date().getFullYear()} {storeName}
+          </p>
+          <a
+            href="/"
+            className="inline-block mt-2 text-[10px] bg-gray-100 text-gray-500 px-3 py-1 rounded-full hover:bg-gray-200 transition"
+          >
+            ¿Quieres tener tu propia tienda? 🚀
+          </a>
+        </footer>
       </main>
 
       <CartDrawer
@@ -93,7 +114,9 @@ export function CatalogPage({
         items={cartItems}
         productsById={productsById}
         currency={currency}
-        onAdd={(productId) => setCartItems((prev) => addToCart(prev, productId))}
+        onAdd={(productId) =>
+          setCartItems((prev) => addToCart(prev, productId))
+        }
         onRemove={(productId) =>
           setCartItems((prev) => removeFromCart(prev, productId))
         }

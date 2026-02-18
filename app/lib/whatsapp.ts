@@ -43,6 +43,12 @@ export function generateWhatsAppMessage(input: WhatsAppMessageInput) {
 }
 
 export function buildWhatsAppUrl(phoneE164: string, encodedMessage: string) {
-  const normalized = phoneE164.replace(/\D/g, "");
+  let normalized = phoneE164.replace(/\D/g, "");
+
+  // Fix for Colombia: If number is 10 digits (mobile), prepend 57
+  if (normalized.length === 10) {
+    normalized = `57${normalized}`;
+  }
+
   return `https://wa.me/${normalized}?text=${encodedMessage}`;
 }

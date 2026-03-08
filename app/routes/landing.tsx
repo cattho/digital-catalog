@@ -17,8 +17,8 @@ export default function Landing() {
       {/* Navbar */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
         <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-2 font-bold text-xl tracking-tight text-gray-900">
-            <div className="h-8 w-8 rounded-lg bg-green-600 flex items-center justify-center text-white font-bold text-lg shadow-sm">
+          <div className="flex items-center gap-2 font-bold text-lg sm:text-xl tracking-tight text-gray-900">
+            <div className="h-7 w-7 sm:h-8 sm:w-8 rounded-lg bg-green-600 flex items-center justify-center text-white font-bold text-base sm:text-lg shadow-sm">
               C
             </div>
             CatalogoYa
@@ -42,16 +42,16 @@ export default function Landing() {
             </Link>
             <Link
               to="/login"
-              className="rounded-full px-5 py-2.5 text-sm font-bold bg-green-600 text-white hover:bg-green-700 transition shadow-lg shadow-green-200"
+              className="rounded-full px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-bold bg-green-600 text-white hover:bg-green-700 transition shadow-lg shadow-green-200 text-center"
             >
-              Crear Tienda Gratis
+              Crear Tienda<span className="hidden sm:inline"> Gratis</span>
             </Link>
           </div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <header className="pt-32 pb-20 relative overflow-hidden">
+      <header className="pt-28 sm:pt-40 pb-16 sm:pb-24 relative overflow-hidden">
         {/* Decorative blobs */}
         <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-green-50 rounded-full blur-3xl -z-10 opacity-70"></div>
         <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-72 h-72 bg-blue-50 rounded-full blur-3xl -z-10 opacity-70"></div>
@@ -66,15 +66,15 @@ export default function Landing() {
               Nuevo: Panel Administrativo
             </div>
 
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1] text-gray-900">
-              Vende por <br />
+            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold tracking-tight leading-tight sm:leading-[1.1] text-gray-900 mt-4 sm:mt-0">
+              Vende por <br className="hidden sm:block" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600">
                 WhatsApp
               </span>{" "}
               sin complicaciones
             </h1>
 
-            <p className="text-xl text-gray-500 max-w-lg mx-auto lg:mx-0 leading-relaxed">
+            <p className="text-lg sm:text-xl text-gray-500 max-w-lg mx-auto lg:mx-0 leading-relaxed">
               Crea tu catálogo digital en segundos. Tus clientes eligen, el
               pedido te llega al WhatsApp listo para enviar. Sin comisiones
               ocultas.

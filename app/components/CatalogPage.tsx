@@ -4,6 +4,7 @@ import { ProductCard } from "~/components/ProductCard";
 import { ProductModal } from "~/components/ProductModal";
 import { BrandHeader } from "~/components/BrandHeader";
 import { CartDrawer } from "~/components/CartDrawer";
+import { Toast } from "~/components/Toast";
 import {
   addToCart,
   readCart,
@@ -27,7 +28,13 @@ export function CatalogPage({
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [toastMessage, setToastMessage] = useState("");
   const [isCartsLoaded, setIsCartsLoaded] = useState(false);
+
+  const handleAddToCart = (product: Product) => {
+    setCartItems((prev) => addToCart(prev, product.id));
+    setToastMessage(`¡${product.name} agregado al carrito!`);
+  };
 
   useEffect(() => {
     setCartItems(readCart());
@@ -108,7 +115,7 @@ export function CatalogPage({
               currency={currency}
               onAdd={(e) => {
                 e.stopPropagation();
-                setCartItems((prev) => addToCart(prev, product.id));
+                handleAddToCart(product);
               }}
               onClickProduct={() => setSelectedProduct(product)}
             />
@@ -149,7 +156,13 @@ export function CatalogPage({
         currency={currency}
         isOpen={!!selectedProduct}
         onClose={() => setSelectedProduct(null)}
-        onAdd={(product) => setCartItems((prev) => addToCart(prev, product.id))}
+        onAdd={handleAddToCart}
+      />
+
+      <Toast 
+        message={toastMessage} 
+        isVisible={!!toastMessage} 
+        onClose={() => setToastMessage("")} 
       />
     </div>
   );

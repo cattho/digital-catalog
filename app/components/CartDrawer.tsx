@@ -10,6 +10,7 @@ export function CartDrawer({
   currency,
   onAdd,
   onRemove,
+  onClear,
   onCheckout,
 }: {
   open: boolean;
@@ -19,6 +20,7 @@ export function CartDrawer({
   currency: string;
   onAdd: (productId: string) => void;
   onRemove: (productId: string) => void;
+  onClear: () => void;
   onCheckout: () => void;
 }) {
   const total = useMemo(() => {
@@ -50,13 +52,24 @@ export function CartDrawer({
             </div>
             <div className="text-xs text-gray-600">{count} artículo(s)</div>
           </div>
-          <button
-            type="button"
-            className="rounded-lg px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
-            onClick={onClose}
-          >
-            Volver al catálogo
-          </button>
+          <div className="flex gap-2">
+            {items.length > 0 && (
+              <button
+                type="button"
+                className="rounded-lg px-2.5 py-2 text-sm font-semibold text-red-600 hover:bg-red-50 transition-colors"
+                onClick={onClear}
+              >
+                Vaciar
+              </button>
+            )}
+            <button
+              type="button"
+              className="rounded-lg px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100 transition-colors"
+              onClick={onClose}
+            >
+              Cerrar
+            </button>
+          </div>
         </div>
 
         <div className="flex-1 overflow-auto p-4 space-y-3">

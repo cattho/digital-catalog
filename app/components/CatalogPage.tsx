@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import type { CartItem, Product } from "~/types/catalog";
 import { ProductCard } from "~/components/ProductCard";
+import { ProductModal } from "~/components/ProductModal";
 import { BrandHeader } from "~/components/BrandHeader";
 import { CartDrawer } from "~/components/CartDrawer";
 import {
@@ -25,6 +26,7 @@ export function CatalogPage({
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isCartsLoaded, setIsCartsLoaded] = useState(false);
 
   useEffect(() => {
@@ -45,7 +47,21 @@ export function CatalogPage({
     >;
   }, [products]);
 
-  const cartCount = cartItems.reduce((acc, i) => acc + i.quantity, 0);
+  // Filtrar los items del carrito para asegurarnos de contar y mostrar 
+  // SÓLO los productos que realmente existen actualmente en la base de datos (por si alguno fue eliminado en el admin).
+  const validCartItems = useMemo(() => {
+    return cartItems.filter((item) => productsById[item.productId] !== undefined);
+  }, [cartItems, productsById]);
+
+  // Si detectamos items inválidos cargados desde localStorage, los limpiamos del estado y de localStorage.
+  useEffect(() => {
+    if (isCartsLoaded && cartItems.length !== validCartItems.length) {
+      setCartItems(validCartItems);
+      writeCart(validCartItems);
+    }
+  }, [isCartsLoaded, cartItems, validCartItems]);
+
+  const cartCount = validCartItems.reduce((acc, i) => acc + i.quantity, 0);
 
   const onCheckout = () => {
     if (!whatsappPhone) {
@@ -90,7 +106,11 @@ export function CatalogPage({
               key={product.id}
               product={product}
               currency={currency}
-              onAdd={() => setCartItems((prev) => addToCart(prev, product.id))}
+              onAdd={(e) => {
+                e.stopPropagation();
+                setCartItems((prev) => addToCart(prev, product.id));
+              }}
+              onClickProduct={() => setSelectedProduct(product)}
             />
           ))}
         </section>
@@ -111,7 +131,7 @@ export function CatalogPage({
       <CartDrawer
         open={cartOpen}
         onClose={() => setCartOpen(false)}
-        items={cartItems}
+        items={validCartItems}
         productsById={productsById}
         currency={currency}
         onAdd={(productId) =>
@@ -120,7 +140,16 @@ export function CatalogPage({
         onRemove={(productId) =>
           setCartItems((prev) => removeFromCart(prev, productId))
         }
+        onClear={() => setCartItems([])}
         onCheckout={onCheckout}
+      />
+
+      <ProductModal
+        product={selectedProduct}
+        currency={currency}
+        isOpen={!!selectedProduct}
+        onClose={() => setSelectedProduct(null)}
+        onAdd={(product) => setCartItems((prev) => addToCart(prev, product.id))}
       />
     </div>
   );
